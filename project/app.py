@@ -5,6 +5,8 @@ from interface.streamlit_utils import get_img_tag
 from interface.train import render_train_interface
 from math_interface import render_math_sandbox
 from run_torch import TorchTrain
+from minitorch import SimpleBackend, Tensor, index_to_position, operators, to_index
+
 
 parser = ArgumentParser()
 parser.add_argument("module_num", type=int)
