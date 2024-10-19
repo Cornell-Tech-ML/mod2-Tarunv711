@@ -401,7 +401,7 @@ class Tensor:
         if dim is not None:
             return All.apply(self, tensor(dim))
         else:
-            return All.apply(self, tensor(0))
+            return All.apply(self, tensor(list(range(self.dims))))
 
     def is_close(self, b: Tensor) -> Tensor:
         """Check if the tensor is close to another tensor.
