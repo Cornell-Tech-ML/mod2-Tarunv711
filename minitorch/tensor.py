@@ -285,3 +285,148 @@ class Tensor:
 
     # Functions
     # TODO: Implement for Task 2.3.
+    @property
+    def size(self) -> int:
+        return self._tensor.size
+
+    @property
+    def dims(self) -> int:
+        return self._tensor.dims
+
+    def _ensure_tensor(self, b: TensorLike) -> Tensor:
+        if isinstance(b, (int, float)):
+            return Tensor.make([b], (1,), backend=self.backend)
+        elif isinstance(b, Tensor):
+            return b
+        else:
+            raise ValueError("Not a valid tensor input")
+
+    def __add__(self, b: TensorLike) -> Tensor:
+        return Add.apply(self, self._ensure_tensor(b))
+
+    def __sub__(self, b: TensorLike) -> Tensor:
+        return Add.apply(self, Neg.apply(self._ensure_tensor(b)))
+
+    def __mul__(self, b: TensorLike) -> Tensor:
+        return Mul.apply(self, self._ensure_tensor(b))
+
+    def __lt__(self, b: TensorLike) -> Tensor:
+        return LT.apply(self, self._ensure_tensor(b))
+
+    def __eq__(self, b: TensorLike) -> Tensor:
+        return EQ.apply(self, self._ensure_tensor(b))
+
+    def __gt__(self, b: TensorLike) -> Tensor:
+        return LT.apply(self._ensure_tensor(b), self)
+
+    def __neg__(self) -> Tensor:
+        return Neg.apply(self)
+    def __radd__(self, b: TensorLike) -> Tensor:
+        return Add.apply(self._ensure_tensor(b), self)
+    def __rmul__(self, b: TensorLike) -> Tensor:
+        return Mul.apply(self._ensure_tensor(b), self)
+
+    def all(self, dim: Optional[int] = None) -> Tensor:
+        if dim is not None:
+            return All.apply(self, tensor(dim))
+        else:
+            return All.apply(self, tensor(0))
+
+    def is_close(self, b: Tensor) -> Tensor:
+        return IsClose.apply(self, self._ensure_tensor(b))
+
+    def sigmoid(self) -> Tensor:
+        return Sigmoid.apply(self)
+
+    def relu(self) -> Tensor:
+        return ReLU.apply(self)
+
+    def log(self) -> Tensor:
+        return Log.apply(self)
+
+    def exp(self) -> Tensor:
+        return Exp.apply(self)
+
+    def sum(self, dim: Optional[int] = None) -> Tensor:
+        """Sums the tensor along a dimension.
+
+        Args:
+        ----
+            dim (Optional[int]): The dimension to sum over. If None, sums over all elements.
+
+        Returns:
+        -------
+            Tensor: A tensor containing the sum.
+
+        """
+        if dim is None:
+            d = []
+            for i in range(len(self.shape)):
+                d.append(i)
+            return Sum.apply(self, tensor(d))
+        else:
+            return Sum.apply(self, tensor(dim))
+   
+    def mean(self, dim: Optional[int] = None) -> Tensor:
+        """Compute the mean of the tensor along the given dimension"""
+        if dim is None:
+            d = []
+            for i in range(len(self.shape)):
+                d.append(i)
+            return Sum.apply(self, tensor(d)) / operators.prod(self.shape)
+        else:
+            return Sum.apply(self, tensor(dim)) / operators.prod(self.shape)
+
+    def permute(self, *order: UserShape | int) -> Tensor:
+        """Permute the dimensions of the tensor"""
+        if len(order) == 1 and isinstance(order[0], int):
+            order = (order[0],)
+        else:
+            order = tuple(order)
+
+        # Convert order to a Tensor
+        order_tensor = tensor(order)
+
+        return Permute.apply(self, order_tensor)
+
+    def view(self, *shape: UserShape | int) -> Tensor:
+        """View the tensor with the given shape"""
+        if len(shape) == 1 and isinstance(shape[0], int):
+            shape = (shape[0],)
+        return View.apply(self, tensor(shape))
+
+    def zero_grad_(self) -> None:
+        self.grad = None
+
+    # def __add__(self, b: TensorLike) -> Tensor:
+    #     return self.add(b)
+
+    # def __radd__(self, b: TensorLike) -> Tensor:
+    #     return self.add(b)
+
+    # def __sub__(self, b: TensorLike) -> Tensor:
+    #     return self.sub(b)
+
+    # def __rsub__(self, b: TensorLike) -> Tensor:
+    #     return self._ensure_tensor(b).sub(self)
+
+    # def __mul__(self, b: TensorLike) -> Tensor:
+    #     return self.mul(b)
+
+    # def __rmul__(self, b: TensorLike) -> Tensor:
+    #     return self.mul(b)
+
+    # def __lt__(self, b: TensorLike) -> Tensor:
+    #     return self.lt(b)
+
+    # def __eq__(self, b: TensorLike) -> Tensor:
+    #     return self.eq(b)
+
+    # def __gt__(self, b: TensorLike) -> Tensor:
+    #     return self.gt(b)
+
+    # def __neg__(self) -> Tensor:
+    #     return self.neg()
+
+    # def abs(self) -> Tensor:
+    #     return self.f.relu(self) + self.f.relu(-self)
