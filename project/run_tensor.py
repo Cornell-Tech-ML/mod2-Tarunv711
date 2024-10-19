@@ -12,6 +12,43 @@ def RParam(*shape):
     return minitorch.Parameter(r)
 
 # TODO: Implement for Task 2.5.
+class Network(minitorch.Module):
+    def __init__(self, hidden_layers):
+        super().__init__()
+        self.layer1 = Linear(2, hidden_layers)
+        self.layer2 = Linear(hidden_layers, hidden_layers)
+        self.layer3 = Linear(hidden_layers, 1)
+
+    def forward(self, x):
+        h = self.layer1.forward(x).relu()
+        h = self.layer2.forward(h).relu()
+        return self.layer3.forward(h).sigmoid()
+
+class Linear(minitorch.Module):
+    def __init__(self, in_size, out_size):
+        super().__init__()
+        self.weights = RParam(in_size, out_size)
+        self.bias = RParam(out_size)
+
+    def forward(self, x):
+        return x @ self.weights + self.bias
+
+# Function to measure time per epoch
+import time
+
+def timed_log_fn(epoch, total_loss, correct, losses):
+    if epoch == 1:
+        timed_log_fn.start_time = time.time()
+    elif epoch % 10 == 0 or epoch == max_epochs:
+        end_time = time.time()
+        time_per_epoch = (end_time - timed_log_fn.start_time) / epoch
+        print(f"Epoch {epoch}, loss {total_loss:.6f}, correct {correct}, time per epoch {time_per_epoch:.4f} seconds")
+
+# # Replace default_log_fn with timed_log_fn in the train method
+# TensorTrain.train = lambda self, data, learning_rate, max_epochs=500, log_fn=timed_log_fn: (
+#     super(TensorTrain, self.__class__).train(self, data, learning_rate, max_epochs, log_fn)
+# )
+
 
 def default_log_fn(epoch, total_loss, correct, losses):
     print("Epoch ", epoch, " loss ", total_loss, "correct", correct)

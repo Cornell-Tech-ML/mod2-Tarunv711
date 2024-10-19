@@ -3,8 +3,17 @@ import plotly.graph_objects as go
 import streamlit as st
 from project.interface.streamlit_utils import render_function
 from show_tensor import tensor_figure
+import sys
+import os
+print(sys.path)
 
-from minitorch import SimpleBackend, Tensor, index_to_position, operators, to_index
+# Add the correct path to sys.path
+correct_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, correct_path)
+
+# Remove the incorrect path if it exists
+sys.path = [p for p in sys.path if 'mod1-Tarunv711' not in p]
+from minitorch import Tensor, index_to_position, operators, to_index, TensorBackend
 from minitorch.tensor_data import TensorData
 
 

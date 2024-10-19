@@ -80,6 +80,7 @@ def add(x: float, y: float) -> float:
     """
     return x + y
 
+
 def sub(x: float, y: float) -> float:
     """Sub two floating-point numbers.
 
@@ -442,4 +443,4 @@ def prod(ls: Iterable[float]) -> float:
         The product of all elements in the list.
 
     """
-    return reduce(mul, ls)
+    return reduce(mul, ls) if ls else 1.0
