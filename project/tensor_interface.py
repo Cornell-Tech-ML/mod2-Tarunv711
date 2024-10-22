@@ -4,7 +4,8 @@ import streamlit as st
 from project.interface.streamlit_utils import render_function
 from show_tensor import tensor_figure
 
-from minitorch import SimpleBackend, Tensor, index_to_position, operators, to_index
+
+from minitorch import SimpleBackend, Tensor, index_to_position, operators, to_index, TensorBackend
 from minitorch.tensor_data import TensorData
 
 
