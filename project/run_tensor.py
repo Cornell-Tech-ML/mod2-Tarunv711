@@ -35,7 +35,7 @@ class Linear(minitorch.Module):
     def forward(self, x):
         reshaped_weights = self.weights.value.view(
             1, *self.weights.value.shape
-        ) 
+        )
         out = (x.view(*x.shape, 1) * reshaped_weights).sum(dim=1).contiguous().view(x.shape[0], self.out_size) + self.bias.value.view(1, self.out_size)
         return out
 
